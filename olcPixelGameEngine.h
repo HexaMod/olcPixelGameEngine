@@ -461,6 +461,32 @@ namespace olc
 	};
 
 	// O------------------------------------------------------------------------------O
+	// | olc::PartialSprite - A wrapper for olc::Sprite containing pos and size       |
+	// O------------------------------------------------------------------------------O
+	class PartialSprite
+	{
+		olc::Sprite* sprite;
+		olc::vi2d pos, size;
+	public:
+		PartialSprite(olc::Sprite* sprite);
+		PartialSprite(olc::Sprite* sprite, olc::vi2d pos, olc::vi2d size);
+		PartialSprite(olc::Sprite* sprite, int32_t posx, int32_t posy, olc::vi2d size);
+		PartialSprite(olc::Sprite* sprite, olc::vi2d pos, int32_t sizex, int32_t sizey);
+		PartialSprite(olc::Sprite* sprite, int32_t posx, int32_t posy, int32_t sizey);
+
+	public:
+		PartialSprite(olc::PartialSprite* partialSprite, olc::vi2d pos, olc::vi2d size);
+		PartialSprite(olc::PartialSprite* partialSprite, int32_t posx, int32_t posy, olc::vi2d size);
+		PartialSprite(olc::PartialSprite* partialSprite, olc::vi2d pos, int32_t sizex, int32_t sizey);
+		PartialSprite(olc::PartialSprite* partialSprite, int32_t posx, int32_t posy, int32_t sizey);
+
+	public:
+		olc::Sprite* getSprite();
+		olc::vi2d getPos();
+		olc::vi2d getSize();
+	};
+
+	// O------------------------------------------------------------------------------O
 	// | olc::Decal - A GPU resident storage of an olc::Sprite                        |
 	// O------------------------------------------------------------------------------O
 	class Decal
@@ -474,6 +500,32 @@ namespace olc
 		int32_t id = -1;
 		olc::Sprite* sprite = nullptr;
 		olc::vf2d vUVScale = { 1.0f, 1.0f };
+	};
+
+	// O------------------------------------------------------------------------------O
+	// | olc::PartialDecal - A wrapper for olc::Decal containing pos and size         |
+	// O------------------------------------------------------------------------------O
+	class PartialDecal
+	{
+		olc::Decal* decal;
+		olc::vi2d pos, size;
+	public:
+		PartialDecal(olc::Decal* decal);
+		PartialDecal(olc::Decal* decal, olc::vi2d pos, olc::vi2d size);
+		PartialDecal(olc::Decal* decal, int32_t posx, int32_t posy, olc::vi2d size);
+		PartialDecal(olc::Decal* decal, olc::vi2d pos, int32_t sizex, int32_t sizey);
+		PartialDecal(olc::Decal* decal, int32_t posx, int32_t posy, int32_t sizey);
+
+	public:
+		PartialDecal(olc::PartialDecal* partialDecal, olc::vi2d pos, olc::vi2d size);
+		PartialDecal(olc::PartialDecal* partialDecal, int32_t posx, int32_t posy, olc::vi2d size);
+		PartialDecal(olc::PartialDecal* partialDecal, olc::vi2d pos, int32_t sizex, int32_t sizey);
+		PartialDecal(olc::PartialDecal* partialDecal, int32_t posx, int32_t posy, int32_t sizey);
+
+	public:
+		olc::Decal* getDecal();
+		olc::vi2d getPos();
+		olc::vi2d getSize();
 	};
 
 	// O------------------------------------------------------------------------------O
@@ -687,6 +739,8 @@ namespace olc
 		// selected area is (ox,oy) to (ox+w,oy+h)
 		void DrawPartialSprite(int32_t x, int32_t y, Sprite *sprite, int32_t ox, int32_t oy, int32_t w, int32_t h, uint32_t scale = 1, uint8_t flip = olc::Sprite::NONE);
 		void DrawPartialSprite(const olc::vi2d& pos, Sprite *sprite, const olc::vi2d& sourcepos, const olc::vi2d& size, uint32_t scale = 1, uint8_t flip = olc::Sprite::NONE);
+		void DrawPartialSprite(int32_t x, int32_t y, const olc::PartialSprite& partialSprite, uint32_t scale = 1, uint8_t flip = olc::Sprite::NONE);
+		void DrawPartialSprite(const olc::vi2d& pos, const olc::PartialSprite& partialSprite, uint32_t scale = 1, uint8_t flip = olc::Sprite::NONE);
 		
 		// Decal Quad functions
 
@@ -694,7 +748,8 @@ namespace olc
 		void DrawDecal(const olc::vf2d& pos, olc::Decal *decal, const olc::vf2d& scale = { 1.0f,1.0f }, const olc::Pixel& tint = olc::WHITE);
 		// Draws a region of a decal, with optional scale and tinting
 		void DrawPartialDecal(const olc::vf2d& pos, olc::Decal* decal, const olc::vf2d& source_pos, const olc::vf2d& source_size, const olc::vf2d& scale = { 1.0f,1.0f }, const olc::Pixel& tint = olc::WHITE);
-		void DrawPartialDecal(const olc::vf2d& pos, const olc::vf2d& size, olc::Decal* decal, const olc::vf2d& source_pos, const olc::vf2d& source_size, const olc::Pixel& tint = olc::WHITE);		
+		void DrawPartialDecal(const olc::vf2d& pos, const olc::vf2d& size, olc::Decal* decal, const olc::vf2d& source_pos, const olc::vf2d& source_size, const olc::Pixel& tint = olc::WHITE);
+		void DrawPartialDecal(const olc::vf2d& pos, const olc::PartialDecal& partialDecal, const olc::vf2d& scale = { 1.0f,1.0f }, const olc::Pixel& tint = olc::WHITE);
 		// Draws fully user controlled 4 vertices, pos(pixels), uv(pixels), colours
 		void DrawExplicitDecal(olc::Decal* decal, const olc::vf2d *pos, const olc::vf2d *uv, const olc::Pixel *col);
 		// Draws a decal with 4 arbitrary points, warping the texture to look "correct"
@@ -1020,6 +1075,44 @@ namespace olc
 	Pixel* Sprite::GetData()
 	{ return pColData; }
 
+	// O------------------------------------------------------------------------------O
+	// | olc::PartialSprite IMPLEMENTATION                                            |
+	// O------------------------------------------------------------------------------O
+	PartialSprite::PartialSprite(olc::Sprite* sprite)
+	{ this->sprite = sprite; pos = olc::vi2d( 0, 0 ); size = olc::vi2d( sprite.width, sprite.height ); }
+
+	PartialSprite::PartialSprite(olc::Sprite* sprite, olc::vi2d pos, olc::vi2d size)
+	{ this->sprite = sprite; this->pos = pos; this->size = size; }
+
+	PartialSprite::PartialSprite(olc::Sprite* sprite, int32_t posx, int32_t posy, olc::vi2d size)
+	{ this->sprite = sprite; pos = olc::vi2d( posx, posy ); this->size = size; }
+
+	PartialSprite::PartialSprite(olc::Sprite* sprite, olc::vi2d pos, int32_t sizex, int32_t sizey)
+	{ this->sprite = sprite; this->pos = pos; size = olc::vi2d( sizex, sizey ); }
+
+	PartialSprite::PartialSprite(olc::Sprite* sprite, int32_t posx, int32_t posy, int32_t sizex int32_t sizey)
+	{ this->sprite = sprite; pos = olc::vi2d( posx, posy ); size = olc::vi2d( sizex, sizey ); }
+
+	PartialSprite::PartialSprite(olc::PartialSprite* partialSprite, olc::vi2d pos, olc::vi2d size)
+	{ sprite = partialSprite.getSprite(); this->pos = pos + partialSprite.getPos(); this->size = size; }
+
+	PartialSprite::PartialSprite(olc::PartialSprite* partialSprite, int32_t posx, int32_t posy, olc::vi2d size)
+	{ sprite = partialSprite.getSprite(); this->pos = olc::vi2d( posx, posy ) + partialSprite.getPos(); this->size = size; }
+
+	PartialSprite::PartialSprite(olc::PartialSprite* partialSprite, olc::vi2d pos, int32_t sizex, int32_t sizey)
+	{ sprite = partialSprite.getSprite(); this->pos = pos + partialSprite.getPos(); this->size = vi2d( sizex, sizey ); }
+
+	PartialSprite::PartialSprite(olc::PartialSprite* partialSprite, int32_t posx, int32_t posy, int32_t sizey)
+	{ sprite = partialSprite.getSprite(); this->pos = olc::vi2d( posx, posy ) + partialSprite.getPos(); this->size = vi2d( sizex, sizey ); }
+
+	olc::Sprite* PartialSprite::getSprite()
+	{ return sprite; }
+
+	olc::vi2d PartialSprite::getPos()
+	{ return pos; }
+
+	olc::vi2d PartialSprite::getSize()
+	{ return size; }
 
 	// O------------------------------------------------------------------------------O
 	// | olc::Decal IMPLEMENTATION                                                   |
@@ -1077,6 +1170,45 @@ namespace olc
 
 	olc::Sprite* Renderable::Sprite() const
 	{ return pSprite.get(); }
+
+	// O------------------------------------------------------------------------------O
+	// | olc::PartialDecal IMPLEMENTATION                                            |
+	// O------------------------------------------------------------------------------O
+	PartialDecal::PartialDecal(olc::Decal* decal)
+	{ this->decal = decal; pos = olc::vi2d( 0, 0 ); size = olc::vi2d( decal.width, decal.height ); }
+
+	PartialDecal::PartialDecal(olc::Decal* decal, olc::vi2d pos, olc::vi2d size)
+	{ this->decal = decal; this->pos = pos; this->size = size; }
+
+	PartialDecal::PartialDecal(olc::Decal* decal, int32_t posx, int32_t posy, olc::vi2d size)
+	{ this->decal = decal; pos = olc::vi2d( posx, posy ); this->size = size; }
+
+	PartialDecal::PartialDecal(olc::Decal* decal, olc::vi2d pos, int32_t sizex, int32_t sizey)
+	{ this->decal = decal; this->pos = pos; size = olc::vi2d( sizex, sizey ); }
+
+	PartialDecal::PartialDecal(olc::Decal* decal, int32_t posx, int32_t posy, int32_t sizex int32_t sizey)
+	{ this->decal = decal; pos = olc::vi2d( posx, posy ); size = olc::vi2d( sizex, sizey ); }
+
+	PartialDecal::PartialDecal(olc::PartialDecal* partialDecal, olc::vi2d pos, olc::vi2d size)
+	{ decal = partialDecal.getDecal(); this->pos = pos + partialDecal.getPos(); this->size = size; }
+
+	PartialDecal::PartialDecal(olc::PartialDecal* partialDecal, int32_t posx, int32_t posy, olc::vi2d size)
+	{ decal = partialDecal.getDecal(); this->pos = olc::vi2d( posx, posy ) + partialDecal.getPos(); this->size = size; }
+
+	PartialDecal::PartialDecal(olc::PartialDecal* partialDecal, olc::vi2d pos, int32_t sizex, int32_t sizey)
+	{ decal = partialDecal.getDecal(); this->pos = pos + partialDecal.getPos(); this->size = vi2d( sizex, sizey ); }
+
+	PartialDecal::PartialDecal(olc::PartialDecal* partialDecal, int32_t posx, int32_t posy, int32_t sizey)
+	{ decal = partialDecal.getDecal(); this->pos = olc::vi2d( posx, posy ) + partialDecal.getPos(); this->size = vi2d( sizex, sizey ); }
+
+	olc::Sprite* PartialDecal::getDecal()
+	{ return decal; }
+
+	olc::vi2d PartialDecal::getPos()
+	{ return pos; }
+
+	olc::vi2d PartialDecal::getSize()
+	{ return size; }
 
 	// O------------------------------------------------------------------------------O
 	// | olc::ResourcePack IMPLEMENTATION                                             |
@@ -1924,6 +2056,12 @@ namespace olc
 		}
 	}
 
+	void PixelGameEngine::DrawPartialSprite(int32_t x, int32_t y, const olc::PartialSprite& partialSprite, uint32_t scale, uint8_t flip)
+	{ DrawPartialSprite(x, y, partialSprite.getSprite(), partialSprite.getPos(), partialSprite.getSize(), scale, flip); }
+
+	void PixelGameEngine::DrawPartialSprite(const olc::vi2d& pos, const olc::PartialSprite& partialSprite, uint32_t scale, uint8_t flip)
+	{ DrawPartialSprite(pos.x, pos.y, partialSprite, scale, flip); }
+
 	void PixelGameEngine::DrawPartialDecal(const olc::vf2d& pos, olc::Decal* decal, const olc::vf2d& source_pos, const olc::vf2d& source_size, const olc::vf2d& scale, const olc::Pixel& tint)
 	{		
 		olc::vf2d vScreenSpacePos =
@@ -1980,6 +2118,9 @@ namespace olc
 		vLayers[nTargetLayer].vecDecalInstance.push_back(di);
 	}
 
+
+	void PixelGameEngine::DrawPartialDecal(const olc::vf2d& pos, const olc::PartialDecal& partialDecal, const olc::vf2d& scale, const olc::Pixel& tint)
+	{ DrawPartialDecal(pos, partialDecal.getDecal(), partialDecal.getPos(), partialDecal.getSize(), scale, tint); }
 
 	void PixelGameEngine::DrawDecal(const olc::vf2d& pos, olc::Decal *decal, const olc::vf2d& scale, const olc::Pixel& tint)
 	{
